@@ -1,6 +1,6 @@
 import React, { useEffect, ReactNode } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, ScrollView, SafeAreaView, FlatList } from 'react-native';
 import { useState } from 'react';
 
 export default function App() {
@@ -24,7 +24,7 @@ export default function App() {
 				<Button title='+' onPress={increment} />
 			</View>
 		);
-	}
+	};
 
 	const HeaderFooterView = () => {
 		return (
@@ -38,7 +38,7 @@ export default function App() {
 				</View>
 			</View>
 		);
-	}
+	};
 
 	const ListView = () => {
 		const infos = [
@@ -62,7 +62,7 @@ export default function App() {
 				}
 			</View>
 		);
-	}
+	};
 
 	const PersonView = () => {
 		type Person = {
@@ -89,14 +89,124 @@ export default function App() {
 				}
 			</View>
 		);
-	}
+	};
+
+	const DynamicView = () => {
+		type Info = {
+			name: string,
+			age: number
+		};
+
+		const [infos, setInfos] = useState<Info>({ name: 'Clément', age: 22 });
+
+		const changeAge = () => {
+			const random = Math.floor(Math.random() * 100);
+			setInfos({ ...infos, age: random });
+		} 
+
+		return (
+			<View style={styles.ListViewContainer}>
+				<Text>I'm {infos.name} and I have {infos.age} yo.</Text>
+				<Button title='Change age' onPress={changeAge} color='violet' />
+			</View>
+		);
+	};
+
+	const InputView = () => {
+		const [name, setName] = useState<string>('Clem');
+		const [age, setAge] = useState<string>('0');
+
+		return (
+			<View style={styles.ListViewContainer}>
+				<Text>Name:</Text>
+				<TextInput style={styles.input} value={name} onChangeText={setName} placeholder='name' />
+				<Text>Age:</Text>
+				<TextInput style={styles.input} value={age} onChangeText={setAge} placeholder='age' keyboardType='numeric' />
+
+				<Text>{name} : {age}</Text>
+			</View>
+		);
+	};
+
+	const ScrollViewView = () => {
+		return (
+			<ScrollView>
+				<Text>roar smell particularly combination consist rhythm must sitting running adjective left affect history care company sheep stepped orange unhappy start arrangement himself former herd</Text>
+				<Text>roar smell particularly combination consist rhythm must sitting running adjective left affect history care company sheep stepped orange unhappy start arrangement himself former herd</Text>
+				<Text>roar smell particularly combination consist rhythm must sitting running adjective left affect history care company sheep stepped orange unhappy start arrangement himself former herd</Text>
+				<Text>roar smell particularly combination consist rhythm must sitting running adjective left affect history care company sheep stepped orange unhappy start arrangement himself former herd</Text>
+				<Text>roar smell particularly combination consist rhythm must sitting running adjective left affect history care company sheep stepped orange unhappy start arrangement himself former herd</Text>
+				<Text>roar smell particularly combination consist rhythm must sitting running adjective left affect history care company sheep stepped orange unhappy start arrangement himself former herd</Text>
+				<Text>roar smell particularly combination consist rhythm must sitting running adjective left affect history care company sheep stepped orange unhappy start arrangement himself former herd</Text>
+				<Text>roar smell particularly combination consist rhythm must sitting running adjective left affect history care company sheep stepped orange unhappy start arrangement himself former herd</Text>
+				<Text>roar smell particularly combination consist rhythm must sitting running adjective left affect history care company sheep stepped orange unhappy start arrangement himself former herd</Text>
+				<Text>roar smell particularly combination consist rhythm must sitting running adjective left affect history care company sheep stepped orange unhappy start arrangement himself former herd</Text>
+				<Text>roar smell particularly combination consist rhythm must sitting running adjective left affect history care company sheep stepped orange unhappy start arrangement himself former herd</Text>
+				<Text>roar smell particularly combination consist rhythm must sitting running adjective left affect history care company sheep stepped orange unhappy start arrangement himself former herd</Text>
+				<Text>roar smell particularly combination consist rhythm must sitting running adjective left affect history care company sheep stepped orange unhappy start arrangement himself former herd</Text>
+				<Text>roar smell particularly combination consist rhythm must sitting running adjective left affect history care company sheep stepped orange unhappy start arrangement himself former herd</Text>
+			</ScrollView>
+		);
+	};
+
+	const FlatListView = () => {
+		const [refreshing, setRefreshing] = useState<boolean>(false);
+		const [isHorizontal, setIsHorizontal] = useState<boolean>(false);
+
+		type ItemType = {
+			key: string,
+			title: string
+		}
+		const datas: ItemType[] = [
+			{ key: '1', title: 'First item' },
+			{ key: '2', title: 'Second item' },
+			{ key: '3', title: 'Third item' },
+			{ key: '4', title: 'Fourth item' },
+		];
+		const renderItem = (item: ItemType) => {
+			return refreshing ? (
+				<Text>Refreshing...</Text>
+			) : (
+				<Text key={item.key} style={{ backgroundColor: 'red', margin: 100, fontSize: 70}}>{item.title}</Text>
+			);
+		}
+
+		const onRefresh = () => {
+			setRefreshing(previous => !previous);
+			console.log('Refreshing...');
+
+			setTimeout(() => {
+				setRefreshing(previous => !previous);
+				console.log('Refreshed !');
+			}, 2000);
+		};
+
+		const changeOrientation = () => {
+			setIsHorizontal(previous => !previous);
+		}
+
+
+		return (
+			<>
+				<View style={{ marginTop: 100}}>
+					<Button title='Change orientation' onPress={changeOrientation} />
+				</View>
+				<FlatList data={datas} keyExtractor={item => item.key} renderItem={({ item }) => renderItem(item)} onRefresh={onRefresh} refreshing={refreshing} horizontal={isHorizontal} />
+			</>
+		);
+	};
+
 
 	return (
 		<>
 			{/* <CounterView /> */}
 			{/* <HeaderFooterView /> */}
 			{/* <ListView /> */}
-			<PersonView />
+			{/* <PersonView /> */}
+			{/* <DynamicView /> */}
+			{/* <InputView /> */}
+			{/* <ScrollViewView /> */}
+			<FlatListView />
 		</>
 	);
 }
@@ -164,5 +274,12 @@ const styles = StyleSheet.create({
 	ListViewTitle: {
 		fontWeight: 'bold',
 		textTransform: 'uppercase',
-	}
+	},
+
+	input: {
+		height: 40,
+		margin: 12,
+		borderWidth: 1,
+		padding: 10,
+	},
 });
